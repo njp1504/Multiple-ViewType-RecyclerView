@@ -81,12 +81,16 @@ class MainActivity : AppCompatActivity() {
         receiveIntent(intent)
     }
 
+    /**
+     * Test Way
+     * (in Terminal)
+     * adb shell am start -a android.intent.action.VIEW -d issues://{owner}/{repo}/issues
+     */
     private fun receiveIntent(intent: Intent?) {
         intent?:return
 
         Log.d(TAG, "onNewIntent() intent=$intent")
 
-        // 암시적 인텐트 수신, 데이터 파싱
         if(Intent.ACTION_VIEW == intent.action) {
             viewModel.setOwnerAndRepo(parseUri(intent.data))
         }
