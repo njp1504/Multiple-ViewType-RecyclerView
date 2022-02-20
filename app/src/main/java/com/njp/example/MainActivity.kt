@@ -70,7 +70,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.update.observe(this) {}
 
 
-        receiveIntent(intent)
+        // screen update with default data
+        viewModel.setOwnerAndRepo(Pair("JakeWharton", "hugo"))
 
     }
 
