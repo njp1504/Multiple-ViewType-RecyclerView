@@ -9,11 +9,16 @@ import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 
 class MainViewModel(
+    private val savedStateHandle: SavedStateHandle,
     private val repository : GithubRepository
 ) : ViewModel() {
-    private val TAG = MainViewModel::class.java.simpleName
+    companion object {
+        private val TAG = MainViewModel::class.java.simpleName
 
-    private val _ownerAndRepo = MutableLiveData<Pair<String, String>>()
+        val KEY_OWNER_AND_REPO = "key_owner_and_repo"
+    }
+
+    private val _ownerAndRepo = savedStateHandle.getLiveData<Pair<String, String>>(KEY_OWNER_AND_REPO)
     val ownerAndRepo : LiveData<Pair<String, String>> = _ownerAndRepo
 
     private val image = GithubItem.GithubImageItem(id = System.currentTimeMillis(), Uri.parse("https://static.toss.im/homepage-static/career-share.jpg"))
@@ -29,9 +34,18 @@ class MainViewModel(
     private val _items = MutableLiveData<List<GithubItem>>()
     val items : LiveData<List<GithubItem>> = _items
 
+    init {
+        Log.i(TAG, "init() ${savedStateHandle.keys().size}")
+
+        savedStateHandle.keys().forEach { key ->
+            Log.d(TAG, "key=$key, value=${savedStateHandle.get<Any>(key)}")
+        }
+    }
 
     fun setOwnerAndRepo(info: Pair<String, String>) {
         _ownerAndRepo.value = info
+
+        savedStateHandle.set(KEY_OWNER_AND_REPO, info)
     }
 
     private fun updateIssues(userName : String, repositoryName : String) {

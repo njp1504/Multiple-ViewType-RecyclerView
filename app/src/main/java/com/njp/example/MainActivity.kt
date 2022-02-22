@@ -7,32 +7,38 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.njp.example.data.GithubRepository
 import com.njp.example.databinding.ActivityMainBinding
 import com.njp.example.network.github.GithubClient
 import com.njp.example.ui.adapter.GithubAdapter
 import com.njp.example.ui.adapter.GithubItem
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
 
     private val viewModel by viewModels<MainViewModel> {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainViewModel(GithubRepository(GithubClient.api)) as T
+        object : AbstractSavedStateViewModelFactory(this, intent?.extras) {
+            override fun <T : ViewModel?> create(
+                key: String,
+                modelClass: Class<T>,
+                handle: SavedStateHandle
+            ): T {
+                return MainViewModel(handle, GithubRepository(GithubClient.api)) as T
             }
         }
-    }
+}
 
     private lateinit var binding : ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d(TAG, "onCreate() savedInstanceState=${savedInstanceState?.get("test_key")}, ${savedInstanceState?.get("ownerAndRepo_key")}")
+        Log.d(TAG, "onCreate() intent=${intent?.extras?.get("test_key")}")
 
         binding = ActivityMainBinding.inflate(layoutInflater).apply {
             lifecycleOwner = this@MainActivity
@@ -71,7 +77,8 @@ class MainActivity : AppCompatActivity() {
 
 
         // screen update with default data
-        viewModel.setOwnerAndRepo(Pair("JakeWharton", "hugo"))
+//        viewModel.setOwnerAndRepo(Pair("JakeWharton", "hugo"))
+        receiveIntent(intent)
 
     }
 
@@ -108,4 +115,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        val currentTime = System.currentTimeMillis()
+        outState.putLong("test_key", currentTime)
+        Log.d(TAG, "onSaveInstanceState() currentTime=$currentTime")
+
+        super.onSaveInstanceState(outState)
+    }
 }
