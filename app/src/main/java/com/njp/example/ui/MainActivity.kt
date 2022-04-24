@@ -1,23 +1,26 @@
-package com.njp.example
+package com.njp.example.ui
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.njp.example.R
 import com.njp.example.data.GithubRepository
 import com.njp.example.databinding.ActivityMainBinding
 import com.njp.example.network.github.GithubClient
-import com.njp.example.ui.adapter.GithubAdapter
-import com.njp.example.ui.adapter.GithubItem
+import com.njp.example.ui.issue.IssueFragment
+import com.njp.example.ui.repo.RepoFragment
 import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
+
+    private val issueFragment: IssueFragment = IssueFragment.newInstance(Pair("JakeWharton", "hugo"))
+    private val repoFragment: RepoFragment = RepoFragment.newInstance(Pair("JakeWharton", "hugo"))
 
     private val viewModel by viewModels<MainViewModel> {
         object : AbstractSavedStateViewModelFactory(this, intent?.extras) {
@@ -41,46 +44,39 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate() intent=${intent?.extras?.get("test_key")}")
 
         binding = ActivityMainBinding.inflate(layoutInflater).apply {
-            lifecycleOwner = this@MainActivity
+            this.lifecycleOwner = this@MainActivity
+            this.viewModel = viewModel
         }
-        binding.viewModel = viewModel
 
         setContentView(binding.root)
 
+        setupBottomNavigationView()
 
-        val adapter = GithubAdapter { view, item ->
-            // onClick
-
-            val str = when(item) {
-                is GithubItem.GithubIssueItem -> item.title
-                is GithubItem.GithubImageItem -> "image"
-            }
-
-            Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
-
-        }.apply {
-            setHasStableIds(true)
-        }
-
-        binding.rvGithub.apply {
-            this.adapter = adapter
-            layoutManager = LinearLayoutManager(context)
-            itemAnimator = null
-        }
-
-
-        viewModel.items.observe(this, Observer {
-            adapter.submitList(it)
-        })
-
-        viewModel.update.observe(this) {}
-
+        navigateTo(issueFragment)
 
         // screen update with default data
-//        viewModel.setOwnerAndRepo(Pair("JakeWharton", "hugo"))
         receiveIntent(intent)
-
     }
+
+
+    private fun setupBottomNavigationView() {
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when(it.itemId) {
+                R.id.menu_issue ->
+                    navigateTo(issueFragment)
+                R.id.menu_repo ->
+                    navigateTo(repoFragment)
+            }
+            true
+        }
+    }
+
+    private fun navigateTo(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.mainContainer.id, fragment)
+            .commit()
+    }
+
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)

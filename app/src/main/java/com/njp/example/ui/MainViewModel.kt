@@ -1,4 +1,4 @@
-package com.njp.example
+package com.njp.example.ui
 
 import android.net.Uri
 import android.util.Log
@@ -43,6 +43,8 @@ class MainViewModel(
     }
 
     fun setOwnerAndRepo(info: Pair<String, String>) {
+        Log.d(TAG, "setOwnerAndRepo() $info")
+
         _ownerAndRepo.value = info
 
         savedStateHandle.set(KEY_OWNER_AND_REPO, info)
