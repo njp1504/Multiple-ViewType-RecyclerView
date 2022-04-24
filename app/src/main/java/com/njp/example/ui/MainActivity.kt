@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.commit
 import androidx.lifecycle.*
 import com.njp.example.R
 import com.njp.example.data.GithubRepository
@@ -64,8 +65,6 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavigationView()
 
-        navigateTo(issueFragment)
-
         // screen update with default data
 //        receiveIntent(intent)
     }
@@ -84,9 +83,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateTo(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(binding.mainContainer.id, fragment)
-            .commit()
+//        supportFragmentManager.beginTransaction()
+//            .replace(binding.fragmentContainerView.id, fragment)
+//            .commit()
+        supportFragmentManager.commit {
+            replace(binding.fragmentContainerView.id, fragment)
+        }
     }
 
 
