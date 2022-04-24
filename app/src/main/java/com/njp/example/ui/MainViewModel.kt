@@ -4,7 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.njp.example.data.GithubRepository
-import com.njp.example.ui.adapter.GithubItem
+import com.njp.example.ui.adapter.IssueItem
 import com.njp.example.ui.repo.adapter.RepoImageItem
 import com.njp.example.ui.repo.adapter.RepoInfoItem
 import com.njp.example.ui.repo.adapter.RepoItem
@@ -27,9 +27,7 @@ class MainViewModel(
     private val _owner = savedStateHandle.getLiveData<String>(KEY_OWNER)
     val owner : LiveData<String> = _owner
 
-    private val image = GithubItem.GithubImageItem(id = System.currentTimeMillis(), Uri.parse("https://static.toss.im/homepage-static/career-share.jpg"))
-
-    val update = Transformations.map(_ownerAndRepo) { params ->
+    val isIssueUpdate = Transformations.map(_ownerAndRepo) { params ->
         Log.d(TAG, "Transformations trigger : $params")
 
         if(params.first.isNotEmpty() && params.second.isNotEmpty()) {
@@ -43,8 +41,8 @@ class MainViewModel(
         updateRepos(it)
     }
 
-    private val _items = MutableLiveData<List<GithubItem>>()
-    val items : LiveData<List<GithubItem>> = _items
+    private val _issues = MutableLiveData<List<IssueItem>>()
+    val issues : LiveData<List<IssueItem>> = _issues
 
     private val _repos = MutableLiveData<List<RepoItem>>()
     val repos : LiveData<List<RepoItem>> = _repos
@@ -81,14 +79,24 @@ class MainViewModel(
 
             Log.d(TAG, "viewModelScope result.size=${result.size}")
 
-            val issues : List<GithubItem> = result
-                .map { GithubItem.GithubIssueItem(it.id.toLong(), it.number, it.title) }
-                .toImmutableList()
+            _issues.value = result
+                .map { IssueItem.IssueInfoItem.from(it) as IssueItem }
+                .toMutableList()
+//                .also {
+//                    Log.d(TAG, "map to size : ${it.size}")
+//                }
+                .apply {
+                    val image = IssueItem.IssueImageItem.from(Uri.parse("https://static.toss.im/homepage-static/career-share.jpg"))
 
-            _items.value = if(issues.isEmpty())
-                                listOf(image)
-                            else
-                                issues.subList(0, 2) + image + issues.subList(3, issues.size)
+                    if(isEmpty())
+                        listOf(image)
+                    else
+                        add(2, image)
+                }
+                .toImmutableList()
+//                .also {
+//                    Log.d(TAG, "final size : ${it.size}")
+//                }
 
         }
     }

@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.njp.example.ui.adapter.GithubItem.GithubIssueItem" />
+            type="com.njp.example.ui.adapter.IssueItem.IssueInfoItem" />
 
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

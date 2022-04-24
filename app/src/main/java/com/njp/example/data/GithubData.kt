@@ -2,6 +2,9 @@ package com.njp.example.data
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Data layer Model
+ */
 
 /**
  * Gson을 사용할 때 @SerializedName 어노테이션을 붙여야 한다.
@@ -15,7 +18,7 @@ import com.google.gson.annotations.SerializedName
  * Java 필드가 변환되고, 이로 인해 Gson 매핑에 오작동이 일어날 수 있기 때문에
  * @SerializedName 은 필수로 사용하는 것이 좋다.
  */
-data class GithubIssue(
+data class GithubIssueData(
     @SerializedName("id") val id : Int,
     @SerializedName("number") val number : String,
     @SerializedName("title") val title : String

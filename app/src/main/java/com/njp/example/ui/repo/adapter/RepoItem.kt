@@ -11,7 +11,8 @@ import com.njp.example.domain.GithubRepo
 
 
 /**
- * ViewType에 책임 부여 : 타입이 자체적으로 특정 ViewHolder 생성
+ * Multiple-ViewType 구현방법 2
+ * - ViewType enum 상수에 책임 부여 : 타입이 자체적으로 각자의 ViewHolder 생성
  */
 enum class RepoViewType {
     REPO {

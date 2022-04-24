@@ -1,6 +1,6 @@
 package com.njp.example.data.remote.github
 
-import com.njp.example.data.GithubIssue
+import com.njp.example.data.GithubIssueData
 import com.njp.example.data.GithubRepoData
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +16,7 @@ interface GithubService {
     suspend fun getIssues(
         @Path("owner") owner : String,
         @Path("repo") repo : String
-    ) : Response<List<GithubIssue>>
+    ) : Response<List<GithubIssueData>>
 
     @GET("/users/{owner}/repos")
     suspend fun getRepos(

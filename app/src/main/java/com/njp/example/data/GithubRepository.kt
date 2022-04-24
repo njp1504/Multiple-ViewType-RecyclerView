@@ -5,6 +5,7 @@ import com.njp.example.data.remote.Result
 import com.njp.example.data.remote.github.GithubService
 import com.njp.example.data.remote.safeApiCall
 import com.njp.example.domain.GithubRepo
+import com.njp.example.domain.GithubIssue
 import java.util.*
 
 class GithubRepository(private val service: GithubService) {
@@ -16,7 +17,9 @@ class GithubRepository(private val service: GithubService) {
         return when(val result = safeApiCall { service.getIssues(userName, repositoryName) }) {
             is Result.Success -> {
                 Log.d(TAG, "getGithubIssues() Success")
-                result.data
+                result.data.map {
+                    GithubIssue.from(it) // data level -> domain level
+                }
             }
             is Result.Error -> {
                 Log.d(TAG, "getGithubIssues() Error")

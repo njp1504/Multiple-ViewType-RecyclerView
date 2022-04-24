@@ -11,17 +11,21 @@ import com.njp.example.R
 import com.njp.example.databinding.ItemIssueBinding
 import com.njp.example.databinding.ItemImageBinding
 
-sealed class GithubViewHolder<D: GithubItem>(binding: ViewDataBinding)
+/**
+ * Multiple-ViewType 구현방법 1
+ * - ViewHolder를 sealed class로 구현하여 Enum 타입에 따라 ViewHolder 분기처리
+ */
+sealed class IssueViewHolder<D: IssueItem>(binding: ViewDataBinding)
     : RecyclerView.ViewHolder(binding.root) {
 
     abstract fun onBind(item: D)
 
-    class IssueViewHolder(
+    class InfoViewHolder(
         private val binding: ItemIssueBinding,
-        private val onClick : (view: View, item: GithubItem) -> Unit
-    ) : GithubViewHolder<GithubItem.GithubIssueItem>(binding) {
+        private val onClick : (view: View, item: IssueItem) -> Unit
+    ) : IssueViewHolder<IssueItem.IssueInfoItem>(binding) {
 
-        override fun onBind(item: GithubItem.GithubIssueItem) {
+        override fun onBind(item: IssueItem.IssueInfoItem) {
             binding.item = item
             binding.executePendingBindings()
 
@@ -32,10 +36,10 @@ sealed class GithubViewHolder<D: GithubItem>(binding: ViewDataBinding)
 
     class ImageViewHolder(
         private val binding: ItemImageBinding,
-        private val onClick : (view: View, item: GithubItem) -> Unit
-    ) : GithubViewHolder<GithubItem.GithubImageItem>(binding) {
+        private val onClick : (view: View, item: IssueItem) -> Unit
+    ) : IssueViewHolder<IssueItem.IssueImageItem>(binding) {
 
-        override fun onBind(item: GithubItem.GithubImageItem) {
+        override fun onBind(item: IssueItem.IssueImageItem) {
             binding.item = item
             binding.executePendingBindings()
 
@@ -50,15 +54,15 @@ sealed class GithubViewHolder<D: GithubItem>(binding: ViewDataBinding)
     companion object {
         fun getViewHolder(
             parent: ViewGroup,
-            viewType: GithubViewType,
-            onClick: (view: View, item: GithubItem) -> Unit
-        ) : GithubViewHolder<GithubItem> {
+            viewType: IssueViewType,
+            onClick: (view: View, item: IssueItem) -> Unit
+        ) : IssueViewHolder<IssueItem> {
             return when(viewType) {
-                GithubViewType.ISSUE -> GithubViewHolder.IssueViewHolder(
+                IssueViewType.ISSUE -> IssueViewHolder.InfoViewHolder(
                     viewBind(parent, R.layout.item_issue),
                     onClick
                 )
-                GithubViewType.IMAGE -> GithubViewHolder.ImageViewHolder(
+                IssueViewType.IMAGE -> IssueViewHolder.ImageViewHolder(
                     viewBind(parent, R.layout.item_image),
                     onClick
                 )
@@ -70,7 +74,7 @@ sealed class GithubViewHolder<D: GithubItem>(binding: ViewDataBinding)
                  * 모든 경우를 branch 한 경우, 생략할 수 있다.
                  */
 
-            } as GithubViewHolder<GithubItem>
+            } as IssueViewHolder<IssueItem>
         }
 
         private fun <T : ViewDataBinding> viewBind(parent: ViewGroup, layoutRes: Int) : T {

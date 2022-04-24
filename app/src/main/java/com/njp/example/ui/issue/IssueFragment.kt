@@ -18,8 +18,8 @@ import com.njp.example.data.GithubRepository
 import com.njp.example.databinding.FragmentIssueBinding
 import com.njp.example.data.remote.github.GithubService
 import com.njp.example.ui.MainViewModel
-import com.njp.example.ui.adapter.GithubAdapter
-import com.njp.example.ui.adapter.GithubItem
+import com.njp.example.ui.adapter.IssueAdapter
+import com.njp.example.ui.adapter.IssueItem
 
 class IssueFragment : Fragment() {
     companion object {
@@ -61,12 +61,12 @@ class IssueFragment : Fragment() {
             this.vm = viewModel
         }
 
-        val adapter = GithubAdapter { view, item ->
+        val adapter = IssueAdapter { view, item ->
             // onClick
 
             val str = when(item) {
-                is GithubItem.GithubIssueItem -> item.title
-                is GithubItem.GithubImageItem -> "image"
+                is IssueItem.IssueInfoItem -> item.title
+                is IssueItem.IssueImageItem -> "image"
             }
 
             Toast.makeText(requireContext(), str, Toast.LENGTH_SHORT).show()
@@ -82,11 +82,11 @@ class IssueFragment : Fragment() {
         }
 
 
-        viewModel.items.observe(this, Observer {
+        viewModel.issues.observe(this, Observer {
             adapter.submitList(it)
         })
 
-        viewModel.update.observe(this) {}
+        viewModel.isIssueUpdate.observe(this) {}
 
         return binding.root
     }
