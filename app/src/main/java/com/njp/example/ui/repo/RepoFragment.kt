@@ -52,7 +52,7 @@ class RepoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRepoBinding.inflate(layoutInflater).apply {
-            this.lifecycleOwner = this@RepoFragment
+            this.lifecycleOwner = viewLifecycleOwner
             this.vm = viewModel
         }
 

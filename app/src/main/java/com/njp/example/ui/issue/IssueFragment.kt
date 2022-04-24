@@ -57,7 +57,7 @@ class IssueFragment : Fragment() {
         Log.i(TAG, "onCreateView()")
 
         binding = FragmentIssueBinding.inflate(layoutInflater).apply {
-            this.lifecycleOwner = this@IssueFragment
+            this.lifecycleOwner = viewLifecycleOwner
             this.vm = viewModel
         }
 
