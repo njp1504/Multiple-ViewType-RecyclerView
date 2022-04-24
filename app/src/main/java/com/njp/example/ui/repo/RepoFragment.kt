@@ -56,6 +56,10 @@ class RepoFragment : Fragment() {
             this.vm = viewModel
         }
 
+        arguments?.getString(ARG_DATA)?.let {
+            viewModel.setOwner(it)
+        }
+
         val adapter = RepoAdapter().apply {
             setHasStableIds(true)
         }
@@ -66,11 +70,11 @@ class RepoFragment : Fragment() {
             itemAnimator = null
         }
 
-        viewModel.repos.observe(this, Observer {
+        viewModel.repos.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
 
-        viewModel.isOwnerUpdate.observe(this) {}
+        viewModel.isOwnerUpdate.observe(viewLifecycleOwner) {}
 
         return binding.root
     }

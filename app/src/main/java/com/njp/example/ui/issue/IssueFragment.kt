@@ -61,6 +61,10 @@ class IssueFragment : Fragment() {
             this.vm = viewModel
         }
 
+        arguments?.getSerializable(ARG_DATA)?.let {
+            viewModel.setOwnerAndRepo(it as Pair<String, String>)
+        }
+
         val adapter = IssueAdapter { view, item ->
             // onClick
 
@@ -82,11 +86,11 @@ class IssueFragment : Fragment() {
         }
 
 
-        viewModel.issues.observe(this, Observer {
+        viewModel.issues.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
 
-        viewModel.isIssueUpdate.observe(this) {}
+        viewModel.isIssueUpdate.observe(viewLifecycleOwner) {}
 
         return binding.root
     }

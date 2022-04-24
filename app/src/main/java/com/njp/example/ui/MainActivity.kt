@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         navigateTo(issueFragment)
 
         // screen update with default data
-        receiveIntent(intent)
+//        receiveIntent(intent)
     }
 
 
