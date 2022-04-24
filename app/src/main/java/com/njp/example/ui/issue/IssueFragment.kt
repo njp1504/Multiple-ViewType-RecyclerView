@@ -21,18 +21,18 @@ import com.njp.example.ui.MainViewModel
 import com.njp.example.ui.adapter.IssueAdapter
 import com.njp.example.ui.adapter.IssueItem
 
-class IssueFragment : Fragment() {
+class IssueFragment(private val param : Pair<String, String>) : Fragment() {
     companion object {
         private val TAG = IssueFragment::class.simpleName
-        private const val ARG_DATA = "arg_data"
-
-        @JvmStatic
-        fun newInstance(data : Pair<String, String>) =
-            IssueFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_DATA, data)
-                }
-            }
+//        private const val ARG_DATA = "arg_data"
+//
+//        @JvmStatic
+//        fun newInstance(data : Pair<String, String>) =
+//            IssueFragment().apply {
+//                arguments = Bundle().apply {
+//                    putSerializable(ARG_DATA, data)
+//                }
+//            }
     }
 
     private val viewModel by activityViewModels<MainViewModel> {
@@ -61,9 +61,7 @@ class IssueFragment : Fragment() {
             this.vm = viewModel
         }
 
-        arguments?.getSerializable(ARG_DATA)?.let {
-            viewModel.setOwnerAndRepo(it as Pair<String, String>)
-        }
+        viewModel.setOwnerAndRepo(param)
 
         val adapter = IssueAdapter { view, item ->
             // onClick

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.*
 import com.njp.example.R
 import com.njp.example.data.GithubRepository
@@ -19,8 +20,12 @@ import kotlinx.coroutines.*
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
 
-    private val issueFragment: IssueFragment = IssueFragment.newInstance(Pair("JakeWharton", "hugo"))
-    private val repoFragment: RepoFragment = RepoFragment.newInstance("JakeWharton")
+    private val issueFragment by lazy {
+        supportFragmentManager.fragmentFactory.instantiate(classLoader, IssueFragment::class.java.name)
+    }
+    private val repoFragment by lazy {
+        supportFragmentManager.fragmentFactory.instantiate(classLoader, RepoFragment::class.java.name)
+    }
 
     private val viewModel by viewModels<MainViewModel> {
         object : AbstractSavedStateViewModelFactory(this, intent?.extras) {
@@ -38,6 +43,13 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /**
+         * AndroidX 이후 Fragment 생성자 초기화
+         * - 빈생성자 패턴 사용할 필요없이 bundle에 데이터를 넣지 않아도 재생성 상황에서 데이터가 보존된다.
+         * - super.onCreate() 이전에 선언
+         */
+        supportFragmentManager.fragmentFactory = FragmentFactoryImpl()
+
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate() savedInstanceState=${savedInstanceState?.get("test_key")}, ${savedInstanceState?.get("ownerAndRepo_key")}")

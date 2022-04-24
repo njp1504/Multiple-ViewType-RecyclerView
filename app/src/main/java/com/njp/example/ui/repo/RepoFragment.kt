@@ -18,18 +18,18 @@ import com.njp.example.data.remote.github.GithubService
 import com.njp.example.ui.MainViewModel
 import com.njp.example.ui.repo.adapter.RepoAdapter
 
-class RepoFragment : Fragment() {
+class RepoFragment(private val param: String) : Fragment() {
     companion object {
         private val TAG = RepoFragment::class.simpleName
-        private const val ARG_DATA = "arg_data"
-
-        @JvmStatic
-        fun newInstance(data : String) =
-            RepoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_DATA, data)
-                }
-            }
+//        private const val ARG_DATA = "arg_data"
+//
+//        @JvmStatic
+//        fun newInstance(data : String) =
+//            RepoFragment().apply {
+//                arguments = Bundle().apply {
+//                    putString(ARG_DATA, data)
+//                }
+//            }
     }
 
     private val viewModel by activityViewModels<MainViewModel> {
@@ -56,9 +56,7 @@ class RepoFragment : Fragment() {
             this.vm = viewModel
         }
 
-        arguments?.getString(ARG_DATA)?.let {
-            viewModel.setOwner(it)
-        }
+        viewModel.setOwner(param)
 
         val adapter = RepoAdapter().apply {
             setHasStableIds(true)
