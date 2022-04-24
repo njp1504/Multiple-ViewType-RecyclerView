@@ -5,7 +5,7 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="vm"
             type="com.njp.example.ui.MainViewModel" />
     </data>
 
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            android:text="@{viewModel.ownerAndRepo.toString()}"
+            android:text="@{vm.ownerAndRepo.toString()}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

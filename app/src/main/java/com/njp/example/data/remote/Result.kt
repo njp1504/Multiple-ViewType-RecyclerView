@@ -1,4 +1,4 @@
-package com.njp.example.network
+package com.njp.example.data.remote
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers

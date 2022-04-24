@@ -11,7 +11,7 @@ import androidx.lifecycle.*
 import com.njp.example.R
 import com.njp.example.data.GithubRepository
 import com.njp.example.databinding.ActivityMainBinding
-import com.njp.example.network.github.GithubClient
+import com.njp.example.data.remote.github.GithubService
 import com.njp.example.ui.issue.IssueFragment
 import com.njp.example.ui.repo.RepoFragment
 import kotlinx.coroutines.*
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
 
     private val issueFragment: IssueFragment = IssueFragment.newInstance(Pair("JakeWharton", "hugo"))
-    private val repoFragment: RepoFragment = RepoFragment.newInstance(Pair("JakeWharton", "hugo"))
+    private val repoFragment: RepoFragment = RepoFragment.newInstance("JakeWharton")
 
     private val viewModel by viewModels<MainViewModel> {
         object : AbstractSavedStateViewModelFactory(this, intent?.extras) {
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return MainViewModel(handle, GithubRepository(GithubClient.api)) as T
+                return MainViewModel(handle, GithubRepository(GithubService.api)) as T
             }
         }
 }
@@ -95,7 +95,11 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onNewIntent() intent=$intent")
 
         if(Intent.ACTION_VIEW == intent.action) {
-            viewModel.setOwnerAndRepo(parseUri(intent.data))
+            val info = parseUri(intent.data)
+
+            viewModel.setOwnerAndRepo(info)
+
+            viewModel.setOwner(info.first)
         }
     }
 

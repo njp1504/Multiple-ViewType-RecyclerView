@@ -7,22 +7,27 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.observe
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.njp.example.data.GithubRepository
 import com.njp.example.databinding.FragmentRepoBinding
-import com.njp.example.network.github.GithubClient
+import com.njp.example.data.remote.github.GithubService
 import com.njp.example.ui.MainViewModel
+import com.njp.example.ui.repo.adapter.RepoAdapter
 
 class RepoFragment : Fragment() {
     companion object {
+        private val TAG = RepoFragment::class.simpleName
         private const val ARG_DATA = "arg_data"
 
         @JvmStatic
-        fun newInstance(data : Pair<String, String>) =
+        fun newInstance(data : String) =
             RepoFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_DATA, data)
+                    putString(ARG_DATA, data)
                 }
             }
     }
@@ -34,7 +39,7 @@ class RepoFragment : Fragment() {
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return MainViewModel(handle, GithubRepository(GithubClient.api)) as T
+                return MainViewModel(handle, GithubRepository(GithubService.api)) as T
             }
         }
     }
@@ -48,9 +53,25 @@ class RepoFragment : Fragment() {
     ): View? {
         binding = FragmentRepoBinding.inflate(layoutInflater).apply {
             this.lifecycleOwner = this@RepoFragment
-            this.viewModel = viewModel
+            this.vm = viewModel
         }
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        val adapter = RepoAdapter().apply {
+            setHasStableIds(true)
+        }
+
+        binding.rvRepo.apply {
+            this.adapter = adapter
+            layoutManager = LinearLayoutManager(context)
+            itemAnimator = null
+        }
+
+        viewModel.repos.observe(this, Observer {
+            adapter.submitList(it)
+        })
+
+        viewModel.isOwnerUpdate.observe(this) {}
+
+        return binding.root
     }
 }

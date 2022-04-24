@@ -16,7 +16,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.njp.example.data.GithubRepository
 import com.njp.example.databinding.FragmentIssueBinding
-import com.njp.example.network.github.GithubClient
+import com.njp.example.data.remote.github.GithubService
 import com.njp.example.ui.MainViewModel
 import com.njp.example.ui.adapter.GithubAdapter
 import com.njp.example.ui.adapter.GithubItem
@@ -42,7 +42,7 @@ class IssueFragment : Fragment() {
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return MainViewModel(handle, GithubRepository(GithubClient.api)) as T
+                return MainViewModel(handle, GithubRepository(GithubService.api)) as T
             }
         }
     }
@@ -58,7 +58,7 @@ class IssueFragment : Fragment() {
 
         binding = FragmentIssueBinding.inflate(layoutInflater).apply {
             this.lifecycleOwner = this@IssueFragment
-            this.viewModel = viewModel
+            this.vm = viewModel
         }
 
         val adapter = GithubAdapter { view, item ->
