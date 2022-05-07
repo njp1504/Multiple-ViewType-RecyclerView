@@ -10,8 +10,9 @@ import com.njp.example.ui.repo.adapter.RepoInfoItem
 import com.njp.example.ui.repo.adapter.RepoItem
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
+import javax.inject.Inject
 
-class MainViewModel(
+class MainViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository : GithubRepository
 ) : ViewModel() {

@@ -2,23 +2,23 @@ package com.njp.example.ui
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import androidx.lifecycle.*
 import com.njp.example.R
 import com.njp.example.data.GithubRepository
-import com.njp.example.databinding.ActivityMainBinding
 import com.njp.example.data.remote.github.GithubService
+import com.njp.example.databinding.ActivityMainBinding
 import com.njp.example.ui.issue.IssueFragment
 import com.njp.example.ui.repo.RepoFragment
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
 
     private val issueFragment by lazy {
@@ -39,6 +39,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 }
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelFactory
+//
+//    val viewModel by lazy {
+//        ViewModelProvider(this, viewModelFactory) [MainViewModel::class.java]
+//    }
 
     private lateinit var binding : ActivityMainBinding
 

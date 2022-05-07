@@ -7,8 +7,11 @@ import com.njp.example.data.remote.safeApiCall
 import com.njp.example.domain.GithubRepo
 import com.njp.example.domain.GithubIssue
 import java.util.*
+import javax.inject.Inject
 
-class GithubRepository(private val service: GithubService) {
+class GithubRepository @Inject constructor(
+    private val service: GithubService
+    ) {
     private val TAG = GithubRepository::class.java.simpleName
 
     suspend fun getGithubIssues(userName : String, repositoryName : String) : List<GithubIssue> {
